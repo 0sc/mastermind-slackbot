@@ -13,7 +13,7 @@ module Lita
 
       def play(response)
         @obj = create_obj(response)
-        response.reply_with_mention(@obj.info.join(" "))
+        response.reply(@obj.info.join(" "))
         if response.args[0]
            game_feedback(response)
         end

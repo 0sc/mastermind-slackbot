@@ -10,7 +10,7 @@ module Lita
         @room = room
         @info = []
         @record = Record.new(room)
-        @char_length = 4
+        @char_length = 5
       end
 
       def check_if_any_game_in_progress
@@ -41,7 +41,7 @@ module Lita
       end
 
       def start_info
-        "Hello #{@user}, I've generated a four digit sequence consisting of r,b,g,y. Can you guess the string?"
+        "Hello #{@user}, I've generated a four character string from the characters: `r, b, g, y, c`. Can you guess the string?"
       end
 
       def analyze_input(input)
