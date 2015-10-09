@@ -3,8 +3,7 @@ source "https://rubygems.org"
 gem "lita"
 gem "lita-slack"
 # gem "mastermind-oscar", ">= 0.1.4"
-# gem "lita-whois"
-gem "pry"
+# gem "pry"
 # Uncomment to use the HipChat adapter
 # gem "lita-hipchat"
 
