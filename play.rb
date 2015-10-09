@@ -94,7 +94,7 @@ module Lita
       end
 
       def give_guess_feedback(input, exact, partial)
-        @info << "Hmmm! Your guess, `{input.join}`, has #{exact + partial} of the correct elements with #{exact} in the correct positions."
+        @info << "Hmmm! Your guess, `#{input.join}`, has #{exact + partial} of the correct elements with #{exact} in the correct positions."
       end
 
       Lita.register_handler(self)
