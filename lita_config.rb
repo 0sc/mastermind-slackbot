@@ -9,4 +9,6 @@ Lita.configure do |config|
   # config.robot.admins  = [""]
   config.adapters.slack.token = "xoxb-12241522149-tijukNrZDpVGYYntbgmo55SF"
   config.robot.alias = "mastermind"
+  config.redis[:url] = ENV["REDISTOGO_URL"]
+  config.http.port = ENV["PORT"]
 end
