@@ -10,7 +10,7 @@ module Lita
         @room = room
         @info = []
         @record = Record.new(room)
-        @char_length = 5
+        @char_length = 4
       end
 
       def check_if_any_game_in_progress
@@ -32,8 +32,8 @@ module Lita
       def create_code
         colors = %w(r g b y c m)
         code = []
-        4.times do
-          index = rand(0...@char_length)
+        @char_length.times do
+          index = rand(0..@char_length)
           code << colors[index]
         end
         @record.save_code(code)
