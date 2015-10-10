@@ -5,10 +5,11 @@ module Lita
     class Mastermind < Handler
       # insert handler code here
       route(/^(play)/, :play, command: true, help:{"play" => "Starts the Mastermind game if not already started. It takes a guess as optional argument"})
-      route(/^try\s+(.+)/, :guess, command: true, help:{"try wxyz" => "Submit wxyz as a guess of the generated sequence."})
-      route(/(instructions)$/, :instructions, command: true, help:{"instructions" => "Returns the game instrutions"})
+      route(/^try\s+(.+)/, :guess, command: false, help:{"try wxyz" => "Submit wxyz as a guess of the generated sequence."})
+      route(/(instructions)$/, :instructions, command: true, help:{"instructions" => "Returns the game instructions."})
       route(/^records/, :record, command: true, help:{"records" => "Returns a record of all games played in this channel. Does not include active game; use 'guesses' for active games"})
-      route(/^guesses/, :current, command: true, help:{"guesses" => "Returns a record of all trys at the current active game session"})
+      route(/^guesses/, :current, command: true, help:{"guesses" => "Returns a record of all 'trys' at the current active game session"})
+      route(/([^\s]+)/, :wrong, command: false)
       # route(/^[stop, quit, end]$/, :quit, command: true, help:{"quit" => "Replies back with Text."})
 
       def play(response)
@@ -19,12 +20,23 @@ module Lita
         end
       end
 
-      # def quit(response)
-      # end
+      def wrong(response)
+        # response.args response.matches response.match_data  response.userresponse.message.body
+
+        routes = %w(guesses help info records instuctions try play)
+        command = response.message.body.split[0]
+
+        return if routes.include? command
+
+        response.reply("`Enter *@mastermindbot play* to start a new game.`")
+        response.reply("`Enter *@mastermindbot guesses* to view guesses for an active game.`")
+        response.reply("`Enter *@mastermindbot records* to view game records.`")
+        response.reply("`Enter *@mastermindbot instructions* for more info.`")
+      end
 
       def guess(response)
         @obj = create_obj(response)
-        response.reply(@obj.info.join(" ")) if @obj.new
+        response.reply(@obj.info.join(" ")) if @obj.new_game
         input ||= response.args[0]
         game_feedback(response)
         # response.reply_with_mention("I cached you guess #{response.args} #{response.user.mention_name} asdfs #{response.room.name}")
@@ -32,9 +44,9 @@ module Lita
       end
 
       def instructions(response)
-        response.reply("`Mastermindbot v0.0.1-beta. Implements the awesomely difficult classic game of same name. In this implementation, Mastermindbot selects a random 4 character sequence of colors from (r)ed, (g)reen, (y)ellow, (b)lue i.e(rgyb). Your challenge is to try and guess the sequence using the very helpful feedback provided after each attempt. Note that characters could be repeated e.g rrrb, ggbg, etc`")
-        response.reply("`Once a game session is started, except for DMs, everyone in the channel or group can take part in guessing the right sequence. You can view guesses `@mastermindbot guesses by others to aid in getting the sequence.`")
-        response.reply("`Your commands, except for DMs, should be prefixed with a mention of the bot, e.g `@mastermindbot play`, `mastermind records`. Enter @mastermindbot to view commands the bot responds to.`")
+        response.reply("`Mastermindbot v0.0.7-beta. Implements the awesomely difficult classic game of same name. In this implementation, Mastermindbot selects a random 4 character sequence of colors from (r)ed, (g)reen, (y)ellow, (b)lue, (c)yan i.e(rgybc). Your challenge is to try and guess the sequence using the very helpful feedback provided after each attempt. Note that characters could be repeated e.g rrrb, cgbg etc`")
+        response.reply("`Once a game session is started, except for DMs, everyone in the channel or group can take part in guessing the right sequence. *@mastermindbot guesses* shows you what others have tried, and that can be really helpful.`")
+        response.reply("`Your commands, except for DMs, should be prefixed with a mention of the bot, e.g `@mastermindbot play`, `mastermind records`. Enter @mastermindbot help to view commands the bot responds to.`")
       end
 
       def record(response)
