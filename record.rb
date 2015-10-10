@@ -48,7 +48,7 @@ module Lita
 
       def save_guess(name, guess, exact, partial)
         File.open(current_file, "a+") do |f|
-          f.puts "#{name} tries #{guess.join}: #{exact} exact and #{partial} partial match \t[#{Time.now.strftime("%l:%M%P %b %d %Y")}]"
+          f.puts "#{name} tries *#{guess.join}*: #{exact} exact and #{partial} partial match \t[#{Time.now.strftime("%l:%M%P %b %d %Y")}]"
         end
       end
 
