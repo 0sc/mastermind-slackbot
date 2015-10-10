@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "lita"
 gem "lita-slack"
+gem 'lita-exclusive-route'
 # gem "mastermind-oscar", ">= 0.1.4"
 # gem "pry"
 # Uncomment to use the HipChat adapter

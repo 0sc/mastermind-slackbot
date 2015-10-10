@@ -9,7 +9,7 @@ module Lita
       route(/(instructions)$/, :instructions, command: true, help:{"instructions" => "Returns the game instructions."})
       route(/^records/, :record, command: true, help:{"records" => "Returns a record of all games played in this channel. Does not include active game; use 'guesses' for active games"})
       route(/^guesses/, :current, command: true, help:{"guesses" => "Returns a record of all 'trys' at the current active game session"})
-      route(/([^\s]+)/, :wrong, command: false)
+      route(/([^\s]+)/, :wrong, command: true, exclusive: true)
       # route(/^[stop, quit, end]$/, :quit, command: true, help:{"quit" => "Replies back with Text."})
 
       def play(response)
@@ -21,12 +21,10 @@ module Lita
       end
 
       def wrong(response)
-        # response.args response.matches response.match_data  response.userresponse.message.body
-
-        routes = %w(guesses help info records instuctions try play)
-        command = response.message.body.split[0]
-
-        return if routes.include? command
+        # # response.args response.matches response.match_data  response.userresponse.message.body
+        # routes = %w(guesses help info records instuctions try play)
+        # command = response.message.body.split[0]
+        # return if routes.include? command
 
         response.reply("`Enter *@mastermindbot play* to start a new game.`")
         response.reply("`Enter *@mastermindbot guesses* to view guesses for an active game.`")
