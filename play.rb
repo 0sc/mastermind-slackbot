@@ -55,8 +55,11 @@ module Lita
           @record.save_guess(@user, input, @char_length, 0)
           @record.save_won(@user, code)
         else
-          exact = exact_match(code, input)
-          partial = partial_match(code, input, exact)
+          partial_exact_matches = new_partial_exact_match(code, input)
+          exact = partial_exact_matches[:exact]
+          partial = partial_exact_matches[:partial]
+          # exact = exact_match(code, input)
+          # partial = partial_match(code, input, exact)
           exact = exact.size
           @record.save_guess(@user, input, exact, partial)
           give_guess_feedback(input, exact, partial)
@@ -70,30 +73,49 @@ module Lita
         end
         true
       end
-
-      def exact_match(game_code,input)
-        exact = []
-        input.each_index do |index|
-          exact << index if game_code[index] == input[index]
-        end
-        exact
+      
+      def new_partial_exact_match(game_code, input)
+          partials = [] + game_code
+          exact = []
+          partial = 0
+          
+          input.each_with_index{ |elt, ind|
+              pIndex = partials.index(elt)
+              exact << ind if game_code[ind] == input[ind]
+             pIndex = partials.index(elt)
+             
+             if(pIndex && !exact.include?(ind))
+              partial += 1
+              partials[pIndex] = nil
+            end
+          }
+          # [exact, partial]
+          {exact: exact, partial: partial}
       end
 
-      def partial_match(game_code, input,exact)
-        partials = [] + game_code
-        exact.each{|elt| partials[elt] = nil}
-        partial = 0
+      # def exact_match(game_code,input)
+      #   exact = []
+      #   input.each_index do |index|
+      #     exact << index if game_code[index] == input[index]
+      #   end
+      #   exact
+      # end
 
-        input.each_with_index do |item, index|
-          pIndex = partials.index(item)
+      # def partial_match(game_code, input,exact)
+      #   partials = [] + game_code
+      #   exact.each{|elt| partials[elt] = nil}
+      #   partial = 0
 
-          if(pIndex && !exact.include?(index))
-            partial += 1
-            partials[pIndex] = nil
-          end
-        end
-        partial
-      end
+      #   input.each_with_index do |item, index|
+      #     pIndex = partials.index(item)
+
+      #     if(pIndex && !exact.include?(index))
+      #       partial += 1
+      #       partials[pIndex] = nil
+      #     end
+      #   end
+      #   partial
+      # end
 
       def give_guess_feedback(input, exact, partial)
         @info << "Hmmm! Your guess, `#{input.join}`, has #{exact + partial} of the correct elements with #{exact} in the correct positions. :smirk:"
