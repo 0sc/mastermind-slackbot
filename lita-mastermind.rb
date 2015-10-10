@@ -42,9 +42,9 @@ module Lita
       end
 
       def instructions(response)
-        response.reply("`Mastermindbot v0.0.7-beta. Implements the awesomely difficult classic game of same name. In this implementation, Mastermindbot selects a random 4 character sequence of colors from (r)ed, (g)reen, (y)ellow, (b)lue, (c)yan i.e(rgybc). Your challenge is to try and guess the sequence using the very helpful feedback provided after each attempt. Note that characters could be repeated e.g rrrb, cgbg etc`")
-        response.reply("`Once a game session is started, except for DMs, everyone in the channel or group can take part in guessing the right sequence. *@mastermindbot guesses* shows you what others have tried, and that can be really helpful.`")
-        response.reply("`Your commands, except for DMs, should be prefixed with a mention of the bot, e.g `@mastermindbot play`, `mastermind records`. Enter @mastermindbot help to view commands the bot responds to.`")
+        response.reply("Mastermindbot v0.0.7-beta. Implements the awesomely difficult classic game of same name. In this implementation, Mastermindbot selects a random 4 character sequence of colors from `r`ed, `g`reen, `y`ellow, `b`lue, `c`yan i.e `(rgybc)`. Your challenge is to try and guess the sequence using the very helpful feedback provided after each attempt. Note that characters could be repeated e.g `rrrb`, `cgbg` etc")
+        response.reply("Once a game session is started, except for DMs, everyone in the channel or group can take part in guessing the right sequence. `@mastermindbot guesses` shows you what others have tried, and that can be really helpful.")
+        response.reply("Your commands, except for DMs, should be prefixed with a mention of the bot, e.g `@mastermindbot play`, `mastermind records`. Enter `@mastermindbot help` to view commands the bot responds to.")
       end
 
       def record(response)
@@ -75,7 +75,7 @@ module Lita
         return response.reply("`Be the first of your friends to play` :+1:") if !file
 
         file.each_line do |entry|
-          response.reply("`#{entry}`")
+          response.reply("`#{entry.chomp}`")
         end
         file.close
       end
