@@ -3,12 +3,13 @@ require "./record"
 module Lita
   module Handlers
     class Play < Handler
-      attr_reader :code, :room
+      attr_reader :code, :room, :new_game
       attr_accessor :info
       def initialize (user, room)
         @user = user
         @room = room
         @info = []
+        @new_game = false
         @record = Record.new(room)
         @char_length = 4
       end
@@ -21,8 +22,9 @@ module Lita
       def start_game
         @code = check_if_any_game_in_progress
         if @code != nil
-          @info << "Game started"
+          @info << "Mastermind game already in progress :simple_smile:. Started: #{@record.get_game_start_time}. Enter mastermind guesses to view guesses so far."
         else
+          @new_game = true
           @code = create_code
           @info << start_info
         end
@@ -47,23 +49,23 @@ module Lita
       def analyze_input(input)
         return unless validate_input(input)
 
-        @record.save_guess(@user, input)
         input = input.split("")
         if (code == input)
-          @info << " you rock! You found the correct sequence. Awesome :)"
+          @info << "you rock! You found the correct sequence. Awesome :clap:"
+          @record.save_guess(@user, input, @char_length, 0)
           @record.save_won(@user, code)
         else
           exact = exact_match(code, input)
           partial = partial_match(code, input, exact)
           exact = exact.size
-
+          @record.save_guess(@user, input, exact, partial)
           give_guess_feedback(input, exact, partial)
         end
       end
 
       def validate_input(input)
         if (input.size != @char_length)
-          @info << "Oops! Wrong input. Your guess should be 4 characters"
+          @info << "Oops! Wrong input. Your guess should be 4 characters :anguished:"
           return false
         end
         true
@@ -94,7 +96,7 @@ module Lita
       end
 
       def give_guess_feedback(input, exact, partial)
-        @info << "Hmmm! Your guess, `#{input.join}`, has #{exact + partial} of the correct elements with #{exact} in the correct positions."
+        @info << "Hmmm! Your guess, `#{input.join}`, has #{exact + partial} of the correct elements with #{exact} in the correct positions. :smirk:"
       end
 
       Lita.register_handler(self)

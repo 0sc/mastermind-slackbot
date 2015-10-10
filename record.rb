@@ -7,7 +7,7 @@ module Lita
       end
 
       def save_code (code)
-        File.open(code_file, "w+"){|f| f.puts code.join}
+        File.open(code_file, "w+"){|f| f.puts "#{code.join}|#{Time.now.strftime("%l:%M%P %b %d %Y")}"}
       end
 
       def retrieve_code(only_code = true)
@@ -46,9 +46,9 @@ module Lita
         delete_file
       end
 
-      def save_guess(name, guess)
+      def save_guess(name, guess, exact, partial)
         File.open(current_file, "a+") do |f|
-          f.puts "#{name} tries #{guess} \t\t[#{Time.now}]"
+          f.puts "#{name} tries #{guess}: #{exact} exact and #{partial} partial match \t\t[#{Time.now.strftime("%l:%M%P %b %d %Y")}]"
         end
       end
 
